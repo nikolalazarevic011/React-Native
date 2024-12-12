@@ -1,23 +1,28 @@
-import { StatusBar } from "expo-status-bar";
-import {
-    ImageBackground,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    View,
-} from "react-native";
-import StartGameScreen from "./screens/StartGameScreen";
-import { LinearGradient } from "expo-linear-gradient";
-import GameScreen from "./screens/GameScreen";
 import { useState } from "react";
+import { StyleSheet, ImageBackground, SafeAreaView } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import AppLoading from "expo-app-loading";
+import StartGameScreen from "./screens/StartGameScreen";
+import GameScreen from "./screens/GameScreen";
 import GameOverScreen from "./screens/GameOverScreen";
+import Colors from "./constants/colors";
+import { useFonts } from "expo-font";
 
 export default function App() {
-    const [userNumber, setUSerNumber] = useState();
+    const [userNumber, setUserNumber] = useState();
     const [gameIsOver, setGameIsOver] = useState(true);
 
+    const [fontsLoaded]= useFonts({
+        "open-sense": require("./assets/fonts/OpenSans-Regular.ttf"),
+        "open-sense-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+    });
+
+    if(!fontsLoaded) {
+      return <AppLoading/>
+    }
+
     function pickedNumberHandler(pickedNumber) {
-        setUSerNumber(pickedNumber);
+        setUserNumber(pickedNumber);
         setGameIsOver(false);
     }
 
@@ -25,24 +30,21 @@ export default function App() {
         setGameIsOver(true);
     }
 
-    let screen = <StartGameScreen onPickedNumber={pickedNumberHandler} />;
+    let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
 
     if (userNumber) {
         screen = (
-            <GameScreen
-                userNumber={userNumber}
-                onGameOver={gameOverHandler()}
-            />
+            <GameScreen userNumber={userNumber} onGameOver={gameOverHandler} />
         );
     }
 
     if (gameIsOver && userNumber) {
-        screen = <GameOverScreen></GameOverScreen>;
+        screen = <GameOverScreen />;
     }
 
     return (
         <LinearGradient
-            colors={["#4e0329", "#ddb52f"]}
+            colors={[Colors.primary700, Colors.accent500]}
             style={styles.rootScreen}
         >
             <ImageBackground
@@ -60,7 +62,6 @@ export default function App() {
 const styles = StyleSheet.create({
     rootScreen: {
         flex: 1,
-        // backgroundColor: "#ddb52f"
     },
     backgroundImage: {
         opacity: 0.15,
