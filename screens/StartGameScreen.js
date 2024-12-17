@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 100,
     alignItems: 'center',
+    justifyContent :'center'
   },
   numberInput: {
     height: 50,
